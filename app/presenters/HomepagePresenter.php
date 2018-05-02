@@ -69,20 +69,20 @@ class HomepagePresenter extends Nette\Application\UI\Presenter {
 
 		$this->thumbImages = $this->mediaService->findThumbImagesFromStorage($fileInfoList);
 
-		$this->template->paginator = $paginator;
+		$this->getTemplate()->paginator = $paginator;
 	}
 
 	public function renderDefault() {
-		$this->template->thumbImages = $this->thumbImages;
-		$this->template->subdirs = $this->fileSystem->findSubdir($this->dir);
-		$this->template->actualDir = $this->dir;
-		$this->template->actualDirArray = explode(DIRECTORY_SEPARATOR, $this->dir);
+		$this->getTemplate()->thumbImages = $this->thumbImages;
+		$this->getTemplate()->subdirs = $this->fileSystem->findSubdir($this->dir);
+		$this->getTemplate()->actualDir = $this->dir;
+		$this->getTemplate()->actualDirArray = explode(DIRECTORY_SEPARATOR, $this->dir);
 	}
 
 	/**
-	 * @param      $path
-	 * @param int  $quality
-	 * @param bool $show
+	 * @param string $path
+	 * @param int    $quality
+	 * @param bool   $show
 	 * @throws BadRequestException
 	 * @throws Nette\Application\AbortException
 	 * @throws Nette\Utils\ImageException
@@ -96,11 +96,11 @@ class HomepagePresenter extends Nette\Application\UI\Presenter {
 		$image = $this->mediaService->getImage($fileInfo);
 
 		if ($show) {
-			Nette\Utils\Image::fromString($image->getContent())->send(Nette\Utils\Image::JPEG, (int)$quality);
+			Nette\Utils\Image::fromString($image->getContent())->send(Nette\Utils\Image::JPEG, $quality);
 		}
 
 		$tempImagePath = WWW_DIR . '/temp-image.jpg';
-		NetteImage::fromString($image->getContent())->save($tempImagePath, (int)$quality, NetteImage::JPEG);
+		NetteImage::fromString($image->getContent())->save($tempImagePath, $quality, NetteImage::JPEG);
 
 		$this->sendResponse(new FileResponse($tempImagePath, basename($image->getOriginalFilePath())));
 	}

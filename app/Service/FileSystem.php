@@ -13,7 +13,7 @@ class FileSystem {
 
 	/**
 	 * FileSystem constructor.
-	 * @param $mediaRootDir
+	 * @param string $mediaRootDir
 	 */
 	public function __construct($mediaRootDir) {
 		$this->mediaRootDir = $mediaRootDir;

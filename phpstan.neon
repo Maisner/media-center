@@ -1,0 +1,9 @@
+includes:
+	- vendor/phpstan/phpstan-nette/extension.neon
+	- vendor/phpstan/phpstan-nette/rules.neon
+parameters:
+	autoload_directories:
+		- %rootDir%/../../../app
+	ignoreErrors:
+		- '#Constant APP_DIR not found.#'
+		- '#Constant WWW_DIR not found.#'
