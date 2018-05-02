@@ -1,0 +1,72 @@
+{* This is the welcome page, you can delete it *}
+
+{block content}
+
+<nav aria-label="breadcrumb" class="mt-2">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a n:href="this dir => null">Home</a></li>
+		{var $temp = []}
+		<li n:class="'breadcrumb-item', $iterator->isLast() ? 'active'" n:foreach="$actualDirArray as $item" n:if="$item !== ''">
+			{var $temp[] = $item}
+			{if $iterator->isLast()}
+				{$item}
+			{else}
+				<a n:href="this dir => implode(DIRECTORY_SEPARATOR, $temp)">{$item}</a>
+			{/if}
+		</li>
+	</ol>
+</nav>
+
+<div class="row mt-4">
+	<div class="col text-center">
+		<a class="btn btn-default" n:href="dirBack!" role="button" n:if="$actualDir"><< Zpět</a>
+		{foreach $subdirs as $leaf => $subdir}
+			<a class="btn btn-secondary" n:href="this dir => implode(DIRECTORY_SEPARATOR, $subdir)"
+			   role="button">{$leaf}</a>
+		{/foreach}
+	</div>
+</div>
+
+{form downloadForm}
+	<div class="row" style="min-height: 900px">
+		<div class="col">
+			<div class="text-center images-wrapper" style="display: none">
+				<a n:href=":Homepage:show $thumb->getOriginalFilePath()" n:foreach="$thumbImages as $thumb"
+						class="image-link">
+		<span class="badge badge-info date-badge"
+			  title="{$thumb->getDate()|date:'j.n.Y H:i'}">{$thumb->getDate()|date:'j.n.Y'}</span>
+
+					<input n:name="files:$thumb->getIdentificator()" class="image-checkbox">
+					<img src="{$thumb->getDataStream()|noCheck}" class="rounded" width="150" height="150">
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col text-center mb-4">
+			{input submit class => "btn btn-success download-form-button", style => "display:none"}
+		</div>
+	</div>
+{/form}
+
+
+<nav aria-label="Page navigation example" n:if="$paginator->getPageCount() > 1">
+	<ul class="pagination justify-content-center">
+		<li n:class="'page-item', $paginator->isFirst() ? 'disabled'">
+			<a class="page-link" n:href="this 1"> << </a>
+		</li>
+		<li n:class="'page-item', $paginator->isFirst() ? 'disabled'">
+			<a class="page-link" n:href="this $paginator->getPage() - 1"> < </a>
+		</li>
+		<li class="page-item disabled">
+			<a class="page-link" href="#">{$paginator->getPage() * $paginator->getItemsPerPage()}
+				z {$paginator->getItemCount()}</a>
+		</li>
+		<li n:class="'page-item', $paginator->isLast() ? 'disabled'">
+			<a class="page-link" n:href="this $paginator->getPage() + 1"> > </a>
+		</li>
+		<li n:class="'page-item', $paginator->isLast() ? 'disabled'">
+			<a class="page-link" n:href="this $paginator->getPageCount()"> >> </a>
+		</li>
+	</ul>
+</nav>

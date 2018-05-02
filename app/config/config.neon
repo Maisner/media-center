@@ -1,0 +1,24 @@
+parameters:
+	zipDir: %wwwDir%/zip
+
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+
+session:
+	expiration: 14 days
+
+
+services:
+	router: App\RouterFactory::createRouter
+
+	mediaService: App\Service\MediaService
+	mediaCenter.fileSystem: MediaCenter\FileSystem(%mediaRootDir%)
+	mediaCenter.imageZipCreator: MediaCenter\ImageZipCreator(%zipDir%)
+	mediaCenter.storage.imageInfoCacheStorage: MediaCenter\Storage\ImageInfoStorage\ImageInfoCacheStorage
+	mediaCenter.storage.thumbImageCacheStorage: MediaCenter\Storage\ThumbImageStorage\ThumbImageCacheStorage
+	mediaCenter.storage.imageCacheStorage: MediaCenter\Storage\ImageStorage\ImageCacheStorage
+	mediaCenter.imageCacheGenerator: MediaCenter\ImageCacheGenerator
