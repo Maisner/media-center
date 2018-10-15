@@ -22,6 +22,9 @@ class ImageInfoData {
 	/** @var DateTime */
 	private $createdDate;
 
+	/** @var int|null */
+	private $orientation;
+
 	/**
 	 * ImageInfoData constructor.
 	 * @param \SplFileInfo $fileInfo
@@ -37,6 +40,10 @@ class ImageInfoData {
 			$this->createdDate = isset($this->exifData['DateTimeOriginal'])
 				? new DateTime($this->exifData['DateTimeOriginal'])
 				: (new DateTime())->setTimestamp(fileatime($fileInfo->getRealPath()));
+
+			if (isset($this->exifData['Orientation']) && \is_numeric($this->exifData['Orientation'])) {
+				$this->orientation = (int)$this->exifData['Orientation'];
+			}
 		}
 
 		if ($this->createdDate === NULL) {
@@ -64,5 +71,19 @@ class ImageInfoData {
 	 */
 	public function getCreatedDate() {
 		return $this->createdDate;
+	}
+
+	/**
+	 * @return int|null
+	 */
+	public function getOrientation() {
+		return $this->orientation;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasOrientation() {
+		return $this->orientation !== NULL;
 	}
 }

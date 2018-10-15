@@ -133,8 +133,9 @@ class MediaService {
 		/** @var Image $thumb */
 		$thumb = Image::fromFile($fileInfo->getRealPath());
 
-		$thumb->resize(self::THUMB_IMAGE_SQUARE_SIZE, self::THUMB_IMAGE_SQUARE_SIZE, Image::EXACT);
 		$imageData = new ImageInfoData($fileInfo);
+		$this->fixRotate($thumb, $imageData);
+		$thumb->resize(self::THUMB_IMAGE_SQUARE_SIZE, self::THUMB_IMAGE_SQUARE_SIZE, Image::EXACT);
 
 		return new ThumbImage(
 			$fileInfo->getRealPath(),
@@ -151,6 +152,7 @@ class MediaService {
 	public function imageFactory(\SplFileInfo $fileInfo) {
 		$image = Image::fromFile($fileInfo->getRealPath());
 		$imageData = new ImageInfoData($fileInfo);
+		$this->fixRotate($image, $imageData);
 		$image->resize(self::IMAGE_WIDTH, NULL, Image::FILL | Image::SHRINK_ONLY);
 
 		return new \MediaCenter\Image\Image(
@@ -158,6 +160,29 @@ class MediaService {
 			$image->toString(Image::JPEG, self::IMAGE_JPEG_QUALITY),
 			$imageData->getCreatedDate()
 		);
+	}
+
+	/**
+	 * @param Image         $image
+	 * @param ImageInfoData $imageInfoData
+	 * @return Image
+	 */
+	protected function fixRotate(Image $image, ImageInfoData $imageInfoData) {
+		if ($imageInfoData->hasOrientation()) {
+			switch ($imageInfoData->getOrientation()) {
+				case 8:
+					$image->rotate(90, 0);
+					break;
+				case 3:
+					$image->rotate(180, 0);
+					break;
+				case 6:
+					$image->rotate(-90, 0);
+					break;
+			}
+		}
+
+		return $image;
 	}
 
 	/**
